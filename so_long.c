@@ -51,15 +51,7 @@ void ft_hook(void* param)
 
 void my_test_function(t_game *game, char *filename)
 {
-	char line1[] = "111111";
 
-	game->map = malloc(sizeof(char*));
-	game->map[0] = malloc(sizeof(line1));
-
-	strcpy(game->map[0], line1);
-
-	ft_printf("game->map: %s\n", game->map);
-	ft_printf("game->map[0]: %s\n", game->map[0]);
 }
 
 
