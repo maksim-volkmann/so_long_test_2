@@ -70,74 +70,12 @@ void check_map_population(t_game *game) {
 		ft_printf("Map has no lines.\n");
 	} else {
 		ft_printf("Total lines populated: %d\n", i);
-    }
+	}
 }
 
 void prn_error(char *message) {
 	ft_printf("%s\n", message);
 }
-
-void fill_map_with_file(t_game *game, char *file) {
-	int fd = open(file, O_RDONLY);
-	if (fd == -1) {
-		prn_error("Error opening file");
-		return;
-	}
-
-	char *line;
-	int i = 0;
-	while ((line = get_next_line(fd)) != NULL && i < game->line_count) {
-		// If trimming is needed: char *trimmed_line = ft_strtrim(line, "chars_to_trim");
-		// game->map[i] = trimmed_line;
-		// free(line); // If you use ft_strtrim, you need to free the original line
-		game->map[i] = line; // If no trimming, just save the line directly
-		i++;
-	}
-	game->map[i] = NULL; // Mark the end
-
-	close(fd);
-}
-
-int	line_counter(char *file, int *line_count)
-{
-	int		fd;
-	char	*current_line;
-
-	fd = open(file, O_RDONLY);
-	if (fd == -1)
-		return (-1);
-	*line_count = 0;
-	while ((current_line = get_next_line(fd)) != NULL)
-	{
-		(*line_count)++;
-		free(current_line);
-	}
-	close(fd);
-	ft_printf("line_count from line_count function: %d\n", *line_count);
-	return (0);
-}
-
-char **array_of_pointer(t_game *game, char *file) {
-
-	line_counter(file, &game->line_count);
-
-	if (game->line_count <= 0) {
-		prn_error("Error counting lines or file is empty");
-		return NULL; // Here, return NULL directly after logging the error
-	}
-
-	// Allocate memory for the map using the line_count from the game struct
-	game->map = malloc(sizeof(char *) * (game->line_count + 1));
-	if (!game->map) {
-		prn_error("Memory allocation error for map");
-		return NULL; // Similarly, return NULL directly after logging the error
-	}
-
-	game->map[game->line_count] = NULL; // Set the last element to NULL
-
-	return game->map; // Return the allocated map
-}
-
 
 // -----------------------------------------------------------------------------
 
@@ -176,7 +114,6 @@ int32_t main(int ac, char *av[])
 	// 	return EXIT_FAILURE;
 	// }
 
-	fill_map_with_file(&game, av[1]);
 	if (!game.map) // Check if map was successfully populated
 	{
 		ft_printf("Failed to populate map\n");
@@ -184,13 +121,13 @@ int32_t main(int ac, char *av[])
 	}
 	check_map_population(&game);
 
-if (game.map == NULL || game.map[0] == NULL) {
-    ft_printf("Map is not properly allocated or first line is NULL.\n");
-} else {
-    ft_printf("First character of the first line: %c\n", game.map[0][0]);
-}
+	if (game.map == NULL || game.map[0] == NULL) {
+		ft_printf("Map is not properly allocated or first line is NULL.\n");
+	} else {
+		// ft_printf("First character of the first line: %c\n", game.map[0][0]);
+	}
 	ft_printf("Map:\n");
-	ft_printf("First map line: %s\n", game.map[0][1]);
+	// ft_printf("First map line: %s\n", game.map[0][1]);
 	// ft_printf("11 map line: %s\n", game.map[10]);
 	// Gotta error check this stuff
 	if (!(game.mlx = mlx_init(WIDTH, HEIGHT, "MLX42", true)))

@@ -15,7 +15,10 @@ CC = cc
 CFLAGS = -Wall -Wextra -Werror
 
 # Source files for so_long
-SRC = so_long.c
+SRC = \
+	so_long.c \
+	read_map.c \
+	
 
 # Object files
 OBJ = $(SRC:.c=.o)
