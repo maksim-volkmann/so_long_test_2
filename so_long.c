@@ -73,7 +73,8 @@ void check_map_population(t_game *game) {
 	}
 }
 
-void prn_error(char *message) {
+void prn_error(char *message)
+{
 	ft_printf("%s\n", message);
 }
 
