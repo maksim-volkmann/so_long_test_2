@@ -22,6 +22,7 @@ typedef struct s_game
 	int	y;
 	int	counter;
 	char	**map;
+	int	line_count;
 }	t_game;
 
 #endif
