@@ -4,8 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include <MLX42/MLX42.h>
 #include "libft/include/libft.h"
+#include "MLX42/MLX42.h" // Correct include statement for MLX42 library
 
 // #include <string.h> // delete later
 
@@ -22,11 +22,27 @@ typedef struct s_game
 	int	y;
 	int	counter;
 	char	**map;
+	char	**map_copy;
 	int	line_count;
+	int	player_x;
+	int	player_y;
 }	t_game;
 
 int	line_counter(char *file, int *line_count);
 char **array_of_pointer(t_game *game, char *file);
 void prn_error(char *message);
+int populate_map(t_game *game, char *file);
+
+//validate_map.c
+void	check_map_line_lengths(t_game *game);
+void	check_map_for_valid_characters(t_game *game);
+void	check_map_walls(t_game *game);
+void	check_map_characters_count(t_game *game);
+
+//check_map_path.c
+void	copy_map(t_game *game);
+void	flood_fill(t_game *game, int x, int y, char target, char replacement);
+bool	check_adjacent_for_f(t_game *game, int x, int y);
+void	check_reachability(t_game *game);
 
 #endif

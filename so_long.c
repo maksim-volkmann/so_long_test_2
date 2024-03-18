@@ -11,7 +11,7 @@ static mlx_image_t* image;
 
 int32_t ft_pixel(int32_t r, int32_t g, int32_t b, int32_t a)
 {
-    return (r << 24 | g << 16 | b << 8 | a);
+	return (r << 24 | g << 16 | b << 8 | a);
 }
 
 void ft_randomize(void* param)
@@ -75,7 +75,7 @@ void check_map_population(t_game *game) {
 
 void prn_error(char *message)
 {
-	ft_printf("%s\n", message);
+	ft_printf("\033[31m%s\033[0m\n", message);
 }
 
 // -----------------------------------------------------------------------------
@@ -88,9 +88,7 @@ int32_t main(int ac, char *av[])
 	game.line_count = 0;
 
 	// line_counter(av[1], &game.line_count);
-	array_of_pointer(&game, av[1]);
 
-	ft_printf("line_count: %d\n", game.line_count);
 
 	if(ac != 2)
 	{
@@ -98,38 +96,73 @@ int32_t main(int ac, char *av[])
 		return (EXIT_FAILURE);
 	}
 
-	// int fd = open(av[1], O_RDONLY);
-	// if (fd == -1) {
-	// 	perror("Error opening file");
-	// 	return EXIT_FAILURE;
-	// }
 
-	// char *line;
-	// while ((line = get_next_line(fd)) != NULL) {
-	// 	// ft_printf("%s\n", line);
-	// 	free(line);
-	// }
+	array_of_pointer(&game, av[1]);
+	printf("Line count 1: %d\n", game.line_count); // After setting line_count
+	populate_map(&game, av[1]);
 
-	// if (close(fd) == -1) {
-	// 	perror("Error closing file");
-	// 	return EXIT_FAILURE;
-	// }
+	ft_printf("map %d\n", ft_strlen(game.map[0]));
+	ft_printf("line_count: %d\n", game.line_count);
+	ft_printf("map[0][0]: %c\n", game.map[0][ft_strlen(game.map[0]) - 1]);
 
-	if (!game.map) // Check if map was successfully populated
-	{
-		ft_printf("Failed to populate map\n");
-		return (EXIT_FAILURE);
+	check_map_line_lengths(&game);
+
+	check_map_for_valid_characters(&game);
+	check_map_walls(&game);
+	check_map_characters_count(&game);
+	printf("player cordinates: x: %d, y: %d\n", game.player_x, game.player_y);
+
+	printf("map[0][0]: %s\n", game.map[0]);
+
+	copy_map(&game);
+	if (game.map_copy == NULL || game.map_copy[0] == NULL) {
+		printf("Map copy is NULL.\n");
+		// return; // Or handle the error as appropriate
 	}
-	check_map_population(&game);
 
-	if (game.map == NULL || game.map[0] == NULL) {
-		ft_printf("Map is not properly allocated or first line is NULL.\n");
-	} else {
-		// ft_printf("First character of the first line: %c\n", game.map[0][0]);
+	ft_printf("player.x: %d, player.y: %d\n", game.player_x, game.player_y);
+	// ft_printf("map_copy[0][0]: \033[32m%c\033[0m\n\n", game.map_copy[0][0]);
+
+	ft_printf("Player character: %c\n", game.map_copy[game.player_x][game.player_y]);
+	game.map_copy[game.player_x][game.player_y] = '0';
+	ft_printf("Player character: %c\n", game.map_copy[game.player_x][game.player_y]);
+
+	flood_fill(&game, game.player_x, game.player_y, '0', 'F');
+
+	ft_printf("\n");
+	if (game.map_copy == NULL) {
+		ft_printf("Map copy is NULL.\n");
 	}
-	ft_printf("Map:\n");
-	// ft_printf("First map line: %s\n", game.map[0][1]);
-	// ft_printf("11 map line: %s\n", game.map[10]);
+
+	for (int i = 0; game.map[i] != NULL; i++) {
+		printf("\033[32m%s\033[0m\n", game.map[i]);
+	}
+	printf("\n");
+	for (int i = 0; game.map_copy[i] != NULL; i++) {
+		printf("\033[32m%s\033[0m\n", game.map_copy[i]);
+	}
+
+	printf("copy_map[0][0]: %c\n", game.map_copy[0][0]);
+
+	// if (!game.map || !game.map[0]) // Check if map and map[0] were successfully populated
+	// {
+	// 	ft_printf("Failed to populate map or map[0]\n");
+	// 	return (EXIT_FAILURE);
+	// }
+
+	// check_reachability(&game);
+	// ft_printf("Map is reachable\n");
+
+	if (game.map_copy == NULL) {
+		ft_printf("Map copy is NULL.\n");
+	}
+
+	for (int i = 0; game.map_copy[i] != NULL; i++) {
+		ft_printf("%s\n", game.map_copy[i]);
+	}
+
+	// printf("\033[34mChecking reachability...\033[0m\n");
+
 	// Gotta error check this stuff
 	if (!(game.mlx = mlx_init(WIDTH, HEIGHT, "MLX42", true)))
 	{

@@ -6,7 +6,7 @@
 #    By: mvolkman <mvolkman@student.42heilbronn.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/08 16:31:03 by mvolkman          #+#    #+#              #
-#    Updated: 2024/03/15 08:50:43 by mvolkman         ###   ########.fr        #
+#    Updated: 2024/03/18 11:46:53 by mvolkman         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,9 @@ CFLAGS = -Wall -Wextra -Werror
 SRC = \
 	so_long.c \
 	read_map.c \
-	
+	validate_map.c \
+	check_map_path.c \
+
 
 # Object files
 OBJ = $(SRC:.c=.o)

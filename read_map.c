@@ -1,5 +1,3 @@
-
-
 #include "so_long.h"
 
 // Count how many lines we have in the file.
@@ -26,6 +24,7 @@ int	line_counter(char *file, int *line_count)
 char **array_of_pointer(t_game *game, char *file)
 {
 	line_counter(file, &game->line_count);
+	ft_printf("Line count ARRAY OF POINTERS: %d\n", game->line_count); // After setting line_count
 	if (game->line_count <= 0) {
 		prn_error("Error counting lines or file is empty");
 		return NULL; // Here, return NULL directly after logging the error
@@ -37,4 +36,30 @@ char **array_of_pointer(t_game *game, char *file)
 	}
 	game->map[game->line_count] = NULL; // Set the last element to NULL
 	return game->map; // Return the allocated map
+}
+
+int populate_map(t_game *game, char *file)
+{
+	int fd;
+	char *line;
+	int i;
+	size_t len;
+
+	fd = open(file, O_RDONLY);
+	if (fd == -1)
+		return (-1); // Handle error
+
+	i = 0;
+	while ((line = get_next_line(fd)) != NULL && i < game->line_count)
+	{
+		// Determine the length of the line excluding the newline character
+		len = ft_strlen(line);
+		if (len > 0 && line[len - 1] == '\n')
+			line[len - 1] = '\0'; // Replace newline character with null terminator
+
+		game->map[i] = line; // Assign the line directly since get_next_line allocates memory
+		i++;
+	}
+	close(fd);
+	return (0); // Success
 }
