@@ -91,3 +91,33 @@ void flood_fill(t_game *game, int x, int y, char target, char replacement) {
 // 		ft_printf("All essential elements are reachable.\n");
 // 	}
 // }
+
+int check_collectables_and_exit_reachability(t_game *game)
+{
+	int x;
+	char current_char;
+	int y;
+
+	x = 0;
+	y = 0;
+	while (x < game->line_count) {
+		y = 0;
+		while ((current_char = game->map_copy[x][y]) != '\0') {
+			// Check if the current character is a collectable or an exit
+			if (current_char == 'C' || current_char == 'E') {
+				// Check adjacent cells for 'F'
+				if (!((x > 0 && game->map_copy[x-1][y] == 'F') || // Up
+						(x < game->line_count - 1 && game->map_copy[x+1][y] == 'F') || // Down
+						(y > 0 && game->map_copy[x][y-1] == 'F') || // Left
+						(game->map_copy[x][y+1] == 'F'))) { // Right
+					prn_error("A collectable or the exit is not reachable.");
+					return 0; // Not all collectables/exits are reachable
+				}
+			}
+			y++;
+		}
+		x++;
+	}
+	return 1; // All collectables and the exit are reachable
+}
+

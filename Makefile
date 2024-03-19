@@ -6,7 +6,7 @@
 #    By: mvolkman <mvolkman@student.42heilbronn.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/08 16:31:03 by mvolkman          #+#    #+#              #
-#    Updated: 2024/03/18 11:46:53 by mvolkman         ###   ########.fr        #
+#    Updated: 2024/03/19 08:13:29 by mvolkman         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,6 +20,7 @@ SRC = \
 	read_map.c \
 	validate_map.c \
 	check_map_path.c \
+	initialize.c \
 
 
 # Object files

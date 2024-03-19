@@ -9,8 +9,12 @@
 
 // #include <string.h> // delete later
 
-#define WIDTH 512
-#define HEIGHT 512
+# define WIDTH 50
+# define HEIGHT 50
+
+# define PLAYER "images/player.png"
+# define WALL "images/wall.png"
+# define GRASS "images/grass.png"
 
 typedef struct s_game
 {
@@ -18,12 +22,14 @@ typedef struct s_game
 	mlx_image_t *player;
 	mlx_image_t *background;
 	mlx_image_t *wall;
+	// mlx_key_data_t	*keydata;
 	int	x;
 	int	y;
 	int	counter;
 	char	**map;
 	char	**map_copy;
 	int	line_count;
+	int	line_width;
 	int	player_x;
 	int	player_y;
 }	t_game;
@@ -42,7 +48,11 @@ void	check_map_characters_count(t_game *game);
 //check_map_path.c
 void	copy_map(t_game *game);
 void	flood_fill(t_game *game, int x, int y, char target, char replacement);
-bool	check_adjacent_for_f(t_game *game, int x, int y);
-void	check_reachability(t_game *game);
+// bool	check_adjacent_for_f(t_game *game, int x, int y);
+// void	check_reachability(t_game *game);
+int		check_collectables_and_exit_reachability(t_game *game);
+
+//iniinitialize.c
+void	init_game(t_game *game);
 
 #endif

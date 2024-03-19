@@ -1,40 +1,76 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   so_long.c                                          :+:      :+:    :+:   */
+/*   so_long2.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mvolkman <mvolkman@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 08:12:57 by mvolkman          #+#    #+#             */
-/*   Updated: 2024/03/19 14:48:13 by mvolkman         ###   ########.fr       */
+/*   Updated: 2024/03/19 13:25:47 by mvolkman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long.h"
 
+static mlx_image_t* image;
+
 // -----------------------------------------------------------------------------
 
-
-
-
-void ft_key_hook(mlx_key_data_t keydata, void *param)
+int32_t ft_pixel(int32_t r, int32_t g, int32_t b, int32_t a)
 {
-    t_game *game = param; // Cast param back to t_game*
-
-    if (keydata.action == MLX_PRESS || keydata.action == MLX_REPEAT) {
-        if (keydata.key == MLX_KEY_W) // Move up
-            game->player->instances[0].y -= 50; // Adjust the amount as needed
-        else if (keydata.key == MLX_KEY_S) // Move down
-            game->player->instances[0].y += 50;
-        else if (keydata.key == MLX_KEY_A) // Move left
-            game->player->instances[0].x -= 50;
-        else if (keydata.key == MLX_KEY_D) // Move right
-            game->player->instances[0].x += 50;
-    }
-	// mlx_image_to_window(game->mlx, game->player, WIDTH * game->player_x, HEIGHT * game->player_y);
-
+	return (r << 24 | g << 16 | b << 8 | a);
 }
 
+void ft_randomize(void* param)
+{
+	(void)param;
+	for (uint32_t i = 0; i < image->width; ++i)
+	{
+		for (uint32_t y = 0; y < image->height; ++y)
+		{
+			uint32_t color = ft_pixel(
+				rand() % 0xFF, // R
+				rand() % 0xFF, // G
+				rand() % 0xFF, // B
+				rand() % 0xFF  // A
+			);
+			mlx_put_pixel(image, i, y, color);
+		}
+	}
+}
+
+// void ft_hook(void* param)
+// {
+// 	mlx_t* mlx = param;
+
+// 	if (mlx_is_key_down(mlx, MLX_KEY_ESCAPE))
+// 		mlx_close_window(mlx);
+// 	if (mlx_is_key_down(mlx, MLX_KEY_UP))
+// 		image->instances[0].y -= 5;
+// 	if (mlx_is_key_down(mlx, MLX_KEY_DOWN))
+// 		image->instances[0].y += 5;
+// 	if (mlx_is_key_down(mlx, MLX_KEY_LEFT))
+// 		image->instances[0].x -= 5;
+// 	if (mlx_is_key_down(mlx, MLX_KEY_RIGHT))
+// 		image->instances[0].x += 5;
+// }
+
+void	ft_key_hook(mlx_key_data_t keydata, void *param)
+{
+	t_game *game = param;
+
+	if (keydata.key == MLX_KEY_ESCAPE)
+		mlx_close_window(game->mlx);
+	if (keydata.key == MLX_KEY_UP)
+		image->instances[0].y -= 5;
+	if (keydata.key == MLX_KEY_DOWN)
+		image->instances[0].y += 5;
+	if (keydata.key == MLX_KEY_LEFT)
+		image->instances[0].x -= 5;
+	if (keydata.key == MLX_KEY_RIGHT)
+		image->instances[0].x += 5;
+
+}
 
 void check_map_population(t_game *game) {
 	if (game->map == NULL) {
@@ -183,43 +219,40 @@ int32_t main(int ac, char *av[])
 		puts(mlx_strerror(mlx_errno));
 		return(EXIT_FAILURE);
 	}
+	if (!(image = mlx_new_image(game.mlx, 50, 50)))
+	{
+		mlx_close_window(game.mlx);
+		puts(mlx_strerror(mlx_errno));
+		return(EXIT_FAILURE);
+	}
+	if (mlx_image_to_window(game.mlx, image, 0, 0) == -1)
+	{
+		mlx_close_window(game.mlx);
+		puts(mlx_strerror(mlx_errno));
+		return(EXIT_FAILURE);
+	}
+
 
 	// DISPLAY IMAGE!!!! [START]
 
-
-	// -----------------------------------------------------------------------------
-
-	mlx_texture_t* wall_text = mlx_load_png(WALL);
-	if (!wall_text)
-		error();
-	game.wall = mlx_texture_to_image(game.mlx, wall_text);
-	if (!game.wall)
-		error();
-	mlx_image_to_window(game.mlx, game.wall, 0, 0);
-	mlx_image_to_window(game.mlx, game.wall, 0, 50);
-	mlx_image_to_window(game.mlx, game.wall, 0, 100);
-	mlx_image_to_window(game.mlx, game.wall, 0, 150);
-
-	// -----------------------------------------------------------------------------
-
-		// Try to load the file
-	mlx_texture_t* texture = mlx_load_png(PLAYER);
+	// Try to load the file
+	mlx_texture_t* texture = mlx_load_png("player.png");
 	if (!texture)
 		error();
 
 	// Convert texture to a displayable image
-	game.player = mlx_texture_to_image(game.mlx, texture);
-	if (!game.player)
+	mlx_image_t* img = mlx_texture_to_image(game.mlx, texture);
+	if (!img)
 		error();
 
-	printf("player.x: %d, player.y: %d\n", game.player_x, game.player_y);
 	// Display the image
-
-	mlx_image_to_window(game.mlx, game.player, WIDTH * game.player_x, HEIGHT * game.player_y);
+	if (mlx_image_to_window(game.mlx, img, 0, 0) < 0)
+		error();
 
 	// DISPLAY IMAGE!!!! [END]
 
 
+	mlx_loop_hook(game.mlx, ft_randomize, game.mlx);
 	// mlx_loop_hook(game.mlx, ft_hook, game.mlx);
 	// mlx_key_hook(game.mlx, &ft_key_hook, &game);
 	mlx_key_hook(game.mlx, &ft_key_hook, &game);

@@ -50,7 +50,7 @@ int populate_map(t_game *game, char *file)
 		return (-1); // Handle error
 
 	i = 0;
-	while ((line = get_next_line(fd)) != NULL && i < game->line_count)
+	while (((line = get_next_line(fd)) != NULL) && (i < game->line_count))
 	{
 		// Determine the length of the line excluding the newline character
 		len = ft_strlen(line);
@@ -63,3 +63,29 @@ int populate_map(t_game *game, char *file)
 	close(fd);
 	return (0); // Success
 }
+
+// int populate_map(t_game *game, char *file)
+// {
+// 	int fd;
+// 	char *line;
+// 	int i;
+
+// 	fd = open(file, O_RDONLY);
+// 	if (fd == -1)
+// 		return (-1); // Handle error
+
+// 	i = 0;
+// 	while (((line = get_next_line(fd)) != NULL) && (i < game->line_count))
+// 	{
+// 		// Determine the length of the line excluding the newline character
+// 		game->line_width = ft_strlen(line);
+// 		printf("Line width 1111: %d\n", game->line_width); // After setting line_width
+// 		if (game->line_width > 0 && line[game->line_width - 1] == '\n')
+// 			line[game->line_width - 1] = '\0'; // Replace newline character with null terminator
+
+// 		game->map[i] = line; // Assign the line directly since get_next_line allocates memory
+// 		i++;
+// 	}
+// 	close(fd);
+// 	return (0); // Success
+// }

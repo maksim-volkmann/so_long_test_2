@@ -98,6 +98,9 @@ void check_map_characters_count(t_game *game)
 	int collectible_count = 0;
 	int start_position_count = 0;
 
+	// for (int i = 0; &game->map[i] != NULL; i++) {
+	// 	printf("\033[32m%s\033[0m\n", game->map[i]);
+	// }
 	i = 0;
 	while (game->map[i])
 	{
@@ -108,6 +111,7 @@ void check_map_characters_count(t_game *game)
 			else if (game->map[i][j] == 'C') collectible_count++;
 			else if (game->map[i][j] == 'P')
 			{
+				 printf("Found P at i=%d, j=%d\n", i, j);
 				game->player_x = i;
 				game->player_y = j;
 				start_position_count++;
