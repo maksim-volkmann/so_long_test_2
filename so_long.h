@@ -11,10 +11,14 @@
 
 # define WIDTH 50
 # define HEIGHT 50
+# define TILE_SIZE 50
+
 
 # define PLAYER "images/player.png"
 # define WALL "images/wall.png"
-# define GRASS "images/grass.png"
+# define DOOR "images/door.png"
+# define BACKGROUND "images/background.png"
+# define COLLECTABLE "images/collectable.png"
 
 typedef struct s_game
 {
@@ -22,7 +26,8 @@ typedef struct s_game
 	mlx_image_t *player;
 	mlx_image_t *background;
 	mlx_image_t *wall;
-	// mlx_key_data_t	*keydata;
+	mlx_image_t *door;
+	mlx_image_t *collc;
 	int	x;
 	int	y;
 	int	counter;
@@ -32,6 +37,8 @@ typedef struct s_game
 	int	line_width;
 	int	player_x;
 	int	player_y;
+	int	init_collc_count;
+	int	read_collc_count;
 }	t_game;
 
 int	line_counter(char *file, int *line_count);

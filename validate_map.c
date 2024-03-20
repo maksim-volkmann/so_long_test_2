@@ -95,7 +95,7 @@ void check_map_characters_count(t_game *game)
 	int i;
 	int	j;
 	int exit_count = 0;
-	int collectible_count = 0;
+	// int collectible_count = 0;
 	int start_position_count = 0;
 
 	// for (int i = 0; &game->map[i] != NULL; i++) {
@@ -108,12 +108,12 @@ void check_map_characters_count(t_game *game)
 		while (game->map[i][j])
 		{
 			if (game->map[i][j] == 'E') exit_count++;
-			else if (game->map[i][j] == 'C') collectible_count++;
+			else if (game->map[i][j] == 'C') game->init_collc_count++;
 			else if (game->map[i][j] == 'P')
 			{
-				 printf("Found P at i=%d, j=%d\n", i, j);
-				game->player_x = i;
-				game->player_y = j;
+				 printf("Found P at i=%d, j=%d\n", j, i);
+				game->player_x = j;
+				game->player_y = i;
 				start_position_count++;
 			}
 			j++;
@@ -127,7 +127,7 @@ void check_map_characters_count(t_game *game)
 		prn_error("Map must contain exactly one exit ('E')!");
 		return;
 	}
-	if (collectible_count < 1)
+	if (game->init_collc_count < 1)
 	{
 		prn_error("Map must contain at least one collectible ('C')!");
 		return;
