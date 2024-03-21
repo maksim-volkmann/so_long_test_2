@@ -6,13 +6,13 @@
 #    By: mvolkman <mvolkman@student.42heilbronn.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/08 16:31:03 by mvolkman          #+#    #+#              #
-#    Updated: 2024/03/19 08:13:29 by mvolkman         ###   ########.fr        #
+#    Updated: 2024/03/21 12:37:48 by mvolkman         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # Compiler and flags
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -g
 
 # Source files for so_long
 SRC = \

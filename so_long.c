@@ -6,7 +6,7 @@
 /*   By: mvolkman <mvolkman@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 08:12:57 by mvolkman          #+#    #+#             */
-/*   Updated: 2024/03/20 13:45:20 by mvolkman         ###   ########.fr       */
+/*   Updated: 2024/03/21 12:44:46 by mvolkman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,36 @@
 
 // -----------------------------------------------------------------------------
 
+static void error(void)
+{
+	puts(mlx_strerror(mlx_errno));
+	exit(EXIT_FAILURE);
+}
+
+bool load_texture(mlx_t *mlx, const char *path, mlx_image_t **texture) {
+    mlx_texture_t* temp_texture;
+
+	temp_texture = mlx_load_png(path);
+    if (!temp_texture) {
+        return false; // Indicate failure to load texture
+    }
+    *texture = mlx_texture_to_image(mlx, temp_texture);
+    if (!*texture) {
+        return false; // Indicate failure to convert texture to image
+	mlx_delete_texture(temp_texture);
+    }
+    return true; // Texture loaded and converted successfully
+}
+
+void init_textures(t_game *game) {
+    if (!load_texture(game->mlx, WALL, &game->wall) ||
+        !load_texture(game->mlx, BACKGROUND, &game->background) ||
+        !load_texture(game->mlx, DOOR, &game->door) ||
+        !load_texture(game->mlx, COLLECTABLE, &game->collc) ||
+        !load_texture(game->mlx, PLAYER, &game->player)) {
+        error(); // Call your error handling function
+    }
+}
 
 void draw_map(t_game *game) {
     int y = 0;
@@ -170,11 +200,7 @@ void prn_error(char *message)
 
 
 
-static void error(void)
-{
-	puts(mlx_strerror(mlx_errno));
-	exit(EXIT_FAILURE);
-}
+
 
 
 
@@ -288,55 +314,47 @@ int32_t main(int ac, char *av[])
 
 	// -----------------------------------------------------------------------------
 
-	mlx_texture_t* wall_text = mlx_load_png(WALL);
-	if (!wall_text)
-		error();
-	game.wall = mlx_texture_to_image(game.mlx, wall_text);
-	if (!game.wall)
-		error();
-	// mlx_image_to_window(game.mlx, game.wall, 0, 0);
-	// mlx_image_to_window(game.mlx, game.wall, 0, 50);
-	// mlx_image_to_window(game.mlx, game.wall, 0, 100);
-	// mlx_image_to_window(game.mlx, game.wall, 0, 150);
+	// wall
+	// mlx_texture_t* wall_text = mlx_load_png(WALL);
+	// if (!wall_text)
+	// 	error();
+	// game.wall = mlx_texture_to_image(game.mlx, wall_text);
+	// if (!game.wall)
+	// 	error();
 
-	// grass
-	mlx_texture_t* background_txt = mlx_load_png(BACKGROUND);
-	if (!background_txt)
-		error();
-	game.background = mlx_texture_to_image(game.mlx, background_txt);
-	if (!game.background)
-		error();
-	// mlx_image_to_window(game.mlx, game.background, 100, 50);
-	// mlx_image_to_window(game.mlx, game.background, 100, 100);
+	// // grass
+	// mlx_texture_t* background_txt = mlx_load_png(BACKGROUND);
+	// if (!background_txt)
+	// 	error();
+	// game.background = mlx_texture_to_image(game.mlx, background_txt);
+	// if (!game.background)
+	// 	error();
 
-	// door
-	mlx_texture_t* door_txt = mlx_load_png(DOOR);
-	if (!door_txt)
-		error();
-	game.door = mlx_texture_to_image(game.mlx, door_txt);
-	if (!game.door)
-		error();
-	// mlx_image_to_window(game.mlx, game.door, 100, 50);
+	// // door
+	// mlx_texture_t* door_txt = mlx_load_png(DOOR);
+	// if (!door_txt)
+	// 	error();
+	// game.door = mlx_texture_to_image(game.mlx, door_txt);
+	// if (!game.door)
+	// 	error();
 
-	// collect
-	mlx_texture_t* collc_txt = mlx_load_png(COLLECTABLE);
-	if (!collc_txt)
-		error();
-	game.collc = mlx_texture_to_image(game.mlx, collc_txt);
-	if (!game.collc)
-		error();
-	// mlx_image_to_window(game.mlx, game.collc, 100, 100);
-	// -----------------------------------------------------------------------------
+	// // collectable
+	// mlx_texture_t* collc_txt = mlx_load_png(COLLECTABLE);
+	// if (!collc_txt)
+	// 	error();
+	// game.collc = mlx_texture_to_image(game.mlx, collc_txt);
+	// if (!game.collc)
+	// 	error();
 
-		// Try to load the file
-	mlx_texture_t* player_txt = mlx_load_png(PLAYER);
-	if (!player_txt)
-		error();
+	// // player
+	// mlx_texture_t* player_txt = mlx_load_png(PLAYER);
+	// if (!player_txt)
+	// 	error();
+	// game.player = mlx_texture_to_image(game.mlx, player_txt);
+	// if (!game.player)
+	// 	error();
 
-	// Convert texture to a displayable image
-	game.player = mlx_texture_to_image(game.mlx, player_txt);
-	if (!game.player)
-		error();
+	init_textures(&game);
 
 	printf("player.x: %d, player.y: %d\n", game.player_x, game.player_y);
 	// Display the image
@@ -356,4 +374,5 @@ int32_t main(int ac, char *av[])
 	mlx_loop(game.mlx);
 	mlx_terminate(game.mlx);
 	return (EXIT_SUCCESS);
+	system("leaks so_long");
 }

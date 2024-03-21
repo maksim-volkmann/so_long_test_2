@@ -6,7 +6,7 @@
 /*   By: mvolkman <mvolkman@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 08:12:50 by mvolkman          #+#    #+#             */
-/*   Updated: 2024/03/20 12:02:53 by mvolkman         ###   ########.fr       */
+/*   Updated: 2024/03/21 09:48:47 by mvolkman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,11 @@
 void	init_game(t_game *game)
 {
 	game->mlx = NULL;
-	// game->player = mlx_image_create(game->mlx, "player.xpm");
-	// game->background = mlx_image_create(game->mlx, "background.xpm");
-	// game->wall = mlx_image_create(game->mlx, "wall.xpm");
-	// game->keydata = NULL;
+	game->player = NULL;
+	game->background = NULL;
+	game->wall = NULL;
+	game->door = NULL;
+	game->collc = NULL;
 	game->x = 0;
 	game->y = 0;
 	game->counter = 0;
