@@ -42,7 +42,7 @@ typedef struct s_game
 }	t_game;
 
 int	line_counter(char *file, int *line_count);
-char **array_of_pointer(t_game *game, char *file);
+void array_of_pointer(t_game *game, char *file);
 void prn_error(char *message);
 int populate_map(t_game *game, char *file);
 

@@ -79,18 +79,16 @@ void draw_player(t_game *game) {
 }
 
 void redraw_tile(t_game *game, int x, int y, char tileType) {
-    // Depending on your game design, this might involve selecting the correct image based on tileType
-    // and calling mlx_put_image_to_window or similar function.
-    mlx_image_t *texture;
-    if (tileType == '0') {
-        texture = game->background; // For empty space
-    } else if (tileType == 'P') {
-        texture = game->player; // For player
-    } else {
-        texture = game->background; // Default to background
-    }
-    // Note: This is a simplified example. Your game might have more tile types and corresponding textures.
-    mlx_image_to_window(game->mlx, texture, x * TILE_SIZE, y * TILE_SIZE);
+	// Depending on your game design, this might involve selecting the correct image based on tileType
+	// and calling mlx_put_image_to_window or similar function.
+	mlx_image_t *texture;
+	if (tileType == '0')
+		texture = game->background; // For empty space
+	else if (tileType == 'P')
+		texture = game->player; // For player
+	else
+		texture = game->background; // Default to background
+	mlx_image_to_window(game->mlx, texture, x * TILE_SIZE, y * TILE_SIZE);
 }
 
 
@@ -149,10 +147,7 @@ void ft_key_hook(mlx_key_data_t keydata, void *param) {
 			mlx_close_window(game->mlx);
     if (keydata.action == MLX_PRESS || keydata.action == MLX_REPEAT) {
         if (keydata.key == MLX_KEY_W) // Move up
-		{
 	    	attempt_move(game, 0, -1);
-			printf("collc_count: %d\n", game->init_collc_count);
-		}
         else if (keydata.key == MLX_KEY_S) // Move down
             attempt_move(game, 0, 1);
         else if (keydata.key == MLX_KEY_A) // Move left
@@ -210,84 +205,50 @@ int32_t main(int ac, char *av[])
 {
 	t_game game;
 
-
-	// line_counter(av[1], &game.line_count);
-
-
 	if(ac != 2)
 	{
 		ft_printf("Error: Invalid number of arguments\n");
 		return (EXIT_FAILURE);
 	}
+
 	init_game(&game);
 
 	array_of_pointer(&game, av[1]);
-	printf("Line count 1: %d\n", game.line_count); // After setting line_count
+
 	populate_map(&game, av[1]);
 
-	ft_printf("map %d\n", ft_strlen(game.map[0]));
-	ft_printf("line_count: %d\n", game.line_count);
-	ft_printf("map[0][0]: %c\n", game.map[0][ft_strlen(game.map[0]) - 1]);
-
 	check_map_line_lengths(&game);
-	printf("SITAS | WIDTH: %d, HEIGHT: %d\n", game.line_width, game.line_count);
-	printf("player cordinates 001: x: %d, y: %d\n", game.player_x, game.player_y);
-	check_map_for_valid_characters(&game);
-	printf("SITAS2 | WIDTH: %d, HEIGHT: %d\n", game.line_width, game.line_count);
-	check_map_walls(&game);
-	printf("SITAS3 | WIDTH: %d, HEIGHT: %d\n", game.line_width, game.line_count);
-	check_map_characters_count(&game);
-	printf("SITAS4 | WIDTH: %d, HEIGHT: %d\n", game.line_width, game.line_count);
-	printf("player cordinates 002: x: %d, y: %d\n", game.player_x, game.player_y);
 
-	printf("map[0][0]: %s\n", game.map[0]);
+	check_map_for_valid_characters(&game);
+
+	check_map_walls(&game);
+
+	check_map_characters_count(&game);
 
 	copy_map(&game);
 	if (game.map_copy == NULL || game.map_copy[0] == NULL) {
 		printf("Map copy is NULL.\n");
-		// return; // Or handle the error as appropriate
 	}
 
-	ft_printf("player.x: %d, player.y: %d\n", game.player_x, game.player_y);
-	// ft_printf("map_copy[0][0]: \033[32m%c\033[0m\n\n", game.map_copy[0][0]);
 
-	ft_printf("Player character: %c\n", game.map_copy[game.player_x][game.player_y]);
+
+	// set player to 0, because we will flood fill from player position
 	game.map_copy[game.player_x][game.player_y] = '0';
-	ft_printf("Player character: %c\n", game.map_copy[game.player_x][game.player_y]);
+
 
 	flood_fill(&game, game.player_x, game.player_y, '0', 'F');
-	printf("SITAS | WIDTH: %d, HEIGHT: %d\n", game.line_width, game.line_count);
-	ft_printf("\n");
-	if (game.map_copy == NULL) {
-		ft_printf("Map copy is NULL.\n");
-	}
-
-	// for (int i = 0; game.map[i] != NULL; i++) {
-	// 	printf("\033[32m%s\033[0m\n", game.map[i]);
-	// }
-	// printf("\n");
-	// for (int i = 0; game.map_copy[i] != NULL; i++) {
-	// 	printf("\033[32m%s\033[0m\n", game.map_copy[i]);
-	// }
-
-	printf("copy_map[0][0]: %c\n", game.map_copy[0][0]);
-
-	// if (!game.map || !game.map[0]) // Check if map and map[0] were successfully populated
-	// {
-	// 	ft_printf("Failed to populate map or map[0]\n");
-	// 	return (EXIT_FAILURE);
-	// }
-
-	// check_reachability(&game);
-	// ft_printf("Map is reachable\n");
 
 	if (game.map_copy == NULL) {
 		ft_printf("Map copy is NULL.\n");
 	}
 
-	// for (int i = 0; game.map_copy[i] != NULL; i++) {
-	// 	ft_printf("%s\n", game.map_copy[i]);
-	// }
+;
+
+	if (game.map_copy == NULL) {
+		ft_printf("Map copy is NULL.\n");
+	}
+
+
 	if (check_collectables_and_exit_reachability(&game))
 	{
 		ft_printf("All collectables and the exit are reachable.\n");
@@ -296,83 +257,27 @@ int32_t main(int ac, char *av[])
 	{
 		ft_printf("Some collectables or the exit are not reachable.\n");
 	}
-	// printf("\033[34mChecking reachability...\033[0m\n");
-	// printf("WIDTH: %d, HEIGHT: %d\n", game.line_width, game.line_count);
+
 
 	game.line_width = ft_strlen(game.map[0]);
-		printf("SITAS | WIDTH: %d, HEIGHT: %d\n", game.line_width, game.line_count);
-	// Gotta error check this stuff
-		// if (!(game.mlx = mlx_init(WIDTH * game.line_width, HEIGHT * game.line_count, "MLX42", true)))
-	if (!(game.mlx = mlx_init(WIDTH * game.line_width, HEIGHT * game.line_count, "MLX42", true)))
+
+
+	if (!(game.mlx = mlx_init(WIDTH * game.line_width, HEIGHT * game.line_count, "Redbull Bull", true)))
 	{
 		puts(mlx_strerror(mlx_errno));
 		return(EXIT_FAILURE);
 	}
 
-	// DISPLAY IMAGE!!!! [START]
-
-
-	// -----------------------------------------------------------------------------
-
-	// wall
-	// mlx_texture_t* wall_text = mlx_load_png(WALL);
-	// if (!wall_text)
-	// 	error();
-	// game.wall = mlx_texture_to_image(game.mlx, wall_text);
-	// if (!game.wall)
-	// 	error();
-
-	// // grass
-	// mlx_texture_t* background_txt = mlx_load_png(BACKGROUND);
-	// if (!background_txt)
-	// 	error();
-	// game.background = mlx_texture_to_image(game.mlx, background_txt);
-	// if (!game.background)
-	// 	error();
-
-	// // door
-	// mlx_texture_t* door_txt = mlx_load_png(DOOR);
-	// if (!door_txt)
-	// 	error();
-	// game.door = mlx_texture_to_image(game.mlx, door_txt);
-	// if (!game.door)
-	// 	error();
-
-	// // collectable
-	// mlx_texture_t* collc_txt = mlx_load_png(COLLECTABLE);
-	// if (!collc_txt)
-	// 	error();
-	// game.collc = mlx_texture_to_image(game.mlx, collc_txt);
-	// if (!game.collc)
-	// 	error();
-
-	// // player
-	// mlx_texture_t* player_txt = mlx_load_png(PLAYER);
-	// if (!player_txt)
-	// 	error();
-	// game.player = mlx_texture_to_image(game.mlx, player_txt);
-	// if (!game.player)
-	// 	error();
-
 	init_textures(&game);
 
-	printf("player.x: %d, player.y: %d\n", game.player_x, game.player_y);
-	// Display the image
-
-	// mlx_image_to_window(game.mlx, game.player, WIDTH * game.player_x, HEIGHT * game.player_y);
-// Example usage within the game loop or main logic
 	draw_map(&game);
 	draw_player(&game);
 
 
-	// DISPLAY IMAGE!!!! [END]
-
-
-	// mlx_loop_hook(game.mlx, ft_hook, game.mlx);
-	// mlx_key_hook(game.mlx, &ft_key_hook, &game);
 	mlx_key_hook(game.mlx, &ft_key_hook, &game);
 	mlx_loop(game.mlx);
+	// mlx_put_string(game.mlx, "GAME OVER, YOU WIN", 0, 0);
 	mlx_terminate(game.mlx);
 	return (EXIT_SUCCESS);
-	system("leaks so_long");
+	// system("leaks so_long");
 }
