@@ -1,13 +1,13 @@
 #ifndef SO_LONG_H
 # define SO_LONG_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include "libft/include/libft.h"
-#include "MLX42/MLX42.h" // Correct include statement for MLX42 library
-
-// #include <string.h> // delete later
+# include <stdio.h>
+# include <stdlib.h>
+# include <stdbool.h>
+# include <string.h>
+# include <errno.h>
+# include "libft/include/libft.h"
+# include "MLX42/MLX42.h"
 
 # define WIDTH 50
 # define HEIGHT 50
@@ -19,6 +19,12 @@
 # define DOOR "images/door.png"
 # define BACKGROUND "images/background.png"
 # define COLLECTABLE "images/collectable.png"
+
+# define NUM_ARGS "Invalid number of arguments!"
+# define INV_NAME "Incorrect file name!"
+# define EMP_FILE "Empty file or error counting lines!"
+# define MAP_MEM_ERR "Memory allocation failed for map!"
+
 
 typedef struct s_game
 {
@@ -41,10 +47,14 @@ typedef struct s_game
 	int	read_collc_count;
 }	t_game;
 
+// read_map.c
 int	line_counter(char *file, int *line_count);
+// int	line_counter(char *file, t_game *game);
+// int	line_counter(t_game *game, char *file);
 void array_of_pointer(t_game *game, char *file);
 void prn_error(char *message);
 int populate_map(t_game *game, char *file);
+// void populate_map(t_game *game, char *file);
 
 //validate_map.c
 void	check_map_line_lengths(t_game *game);
@@ -61,5 +71,10 @@ int		check_collectables_and_exit_reachability(t_game *game);
 
 //iniinitialize.c
 void	init_game(t_game *game);
+
+//clean_up.c
+void	free_images(t_game *game);
+void	free_map(char ***map);
+void	error_and_cleanup(t_game *game, const char *msg);
 
 #endif

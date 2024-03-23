@@ -6,7 +6,7 @@
 /*   By: mvolkman <mvolkman@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 08:12:57 by mvolkman          #+#    #+#             */
-/*   Updated: 2024/03/21 12:44:46 by mvolkman         ###   ########.fr       */
+/*   Updated: 2024/03/23 15:08:27 by mvolkman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,30 +133,23 @@ void attempt_move(t_game *game, int dx, int dy) {
 }
 
 
-
-
-
-
-
-
-
 void ft_key_hook(mlx_key_data_t keydata, void *param) {
-    t_game *game = param; // Cast param back to t_game*
+	t_game *game = param; // Cast param back to t_game*
 
-		if (keydata.key == MLX_KEY_ESCAPE)
-			mlx_close_window(game->mlx);
-    if (keydata.action == MLX_PRESS || keydata.action == MLX_REPEAT) {
-        if (keydata.key == MLX_KEY_W) // Move up
-	    	attempt_move(game, 0, -1);
-        else if (keydata.key == MLX_KEY_S) // Move down
-            attempt_move(game, 0, 1);
-        else if (keydata.key == MLX_KEY_A) // Move left
-            attempt_move(game, -1, 0);
-        else if (keydata.key == MLX_KEY_D) // Move right
-            attempt_move(game, 1, 0);
-    }
+	if (keydata.key == MLX_KEY_ESCAPE)
+		mlx_close_window(game->mlx);
+	if (keydata.action == MLX_PRESS || keydata.action == MLX_REPEAT)
+	{
+		if (keydata.key == MLX_KEY_W) // Move up
+			attempt_move(game, 0, -1);
+		else if (keydata.key == MLX_KEY_S) // Move down
+			attempt_move(game, 0, 1);
+		else if (keydata.key == MLX_KEY_A) // Move left
+			attempt_move(game, -1, 0);
+		else if (keydata.key == MLX_KEY_D) // Move right
+			attempt_move(game, 1, 0);
+	}
 
-	// ft_printf("read_collc_count: %d\n", game->read_collc_count);
 }
 
 
@@ -190,30 +183,44 @@ void prn_error(char *message)
 	ft_printf("\033[31m%s\033[0m\n", message);
 }
 
-// -----------------------------------------------------------------------------
+int	validate_map_name(const char *map_name)
+{
+	const char	*actual_file_name;
+	size_t		len;
 
-
-
-
-
-
-
-
+	actual_file_name = ft_strrchr(map_name, '/');
+	if (actual_file_name == NULL)
+		actual_file_name = map_name;
+	else
+		actual_file_name++;
+	len = ft_strlen(actual_file_name);
+	if (len < 5)
+		return (0);
+	if (actual_file_name[len - 4] == '.'
+		&& actual_file_name[len - 3] == 'b'
+		&& actual_file_name[len - 2] == 'e'
+		&& actual_file_name[len - 1] == 'r')
+		return (1);
+	return (0);
+}
 
 
 int32_t main(int ac, char *av[])
 {
+	// printf("aaaaaaa *av[1]: %c\n", *av[1]);
 	t_game game;
 
-	if(ac != 2)
-	{
-		ft_printf("Error: Invalid number of arguments\n");
-		return (EXIT_FAILURE);
-	}
-
 	init_game(&game);
+	if(ac != 2)
+		error_and_cleanup(&game, NUM_ARGS);
+	if (!validate_map_name(av[1]))
+		error_and_cleanup(&game, INV_NAME);
+
+	// line_counter(&game, av[1]);
 
 	array_of_pointer(&game, av[1]);
+
+
 
 	populate_map(&game, av[1]);
 
@@ -262,7 +269,7 @@ int32_t main(int ac, char *av[])
 	game.line_width = ft_strlen(game.map[0]);
 
 
-	if (!(game.mlx = mlx_init(WIDTH * game.line_width, HEIGHT * game.line_count, "Redbull Bull", true)))
+	if (!(game.mlx = mlx_init(WIDTH * game.line_width, HEIGHT * game.line_count, "Redbull Bull", false)))
 	{
 		puts(mlx_strerror(mlx_errno));
 		return(EXIT_FAILURE);
@@ -272,12 +279,10 @@ int32_t main(int ac, char *av[])
 
 	draw_map(&game);
 	draw_player(&game);
-
-
+	// system("so_long maps/map1.ber");
 	mlx_key_hook(game.mlx, &ft_key_hook, &game);
 	mlx_loop(game.mlx);
 	// mlx_put_string(game.mlx, "GAME OVER, YOU WIN", 0, 0);
 	mlx_terminate(game.mlx);
 	return (EXIT_SUCCESS);
-	// system("leaks so_long");
 }
