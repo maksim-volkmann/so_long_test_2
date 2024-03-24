@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   so_long.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mvolkman <mvolkman@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: goldman <goldman@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 08:12:57 by mvolkman          #+#    #+#             */
-/*   Updated: 2024/03/23 15:08:27 by mvolkman         ###   ########.fr       */
+/*   Updated: 2024/03/24 22:09:58 by goldman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -216,21 +216,21 @@ int32_t main(int ac, char *av[])
 	if (!validate_map_name(av[1]))
 		error_and_cleanup(&game, INV_NAME);
 
-	// line_counter(&game, av[1]);
-
-	array_of_pointer(&game, av[1]);
-
-
-
+	line_counter(&game, av[1]);
+	array_of_pointer(&game);
 	populate_map(&game, av[1]);
+	// need to move this to new function or add to existing one.
+	game.line_width = ft_strlen(game.map[0]);
+	printf("line_width: %d\n", game.line_width);
+
 
 	check_map_line_lengths(&game);
-
 	check_map_for_valid_characters(&game);
-
 	check_map_walls(&game);
+	count_map_characters(&game);
+	check_map_character_count(&game);
 
-	check_map_characters_count(&game);
+
 
 	copy_map(&game);
 	if (game.map_copy == NULL || game.map_copy[0] == NULL) {
@@ -238,12 +238,32 @@ int32_t main(int ac, char *av[])
 	}
 
 
-
+		printf("SEG HERE\n");
 	// set player to 0, because we will flood fill from player position
-	game.map_copy[game.player_x][game.player_y] = '0';
+	// game.map_copy[game.player_x][game.player_y] = '0';
 
 
-	flood_fill(&game, game.player_x, game.player_y, '0', 'F');
+	// flood_fill(&game, game.player_x, game.player_y, '0', 'F');
+	flood_fill(&game, game.player_x, game.player_y);
+	// if (game->map_copy[x][y] != target) {
+	// 	printf("returnina cia\n");
+	// 	return;
+	// }
+
+	// fill(&game);
+		int x = 0;
+		int y;
+		while (game.map_copy[x] != NULL) {
+			y = 0;
+			while (game.map_copy[x][y] != '\0') {
+				printf("%c", game.map_copy[x][y]);
+				y++;
+			}
+			printf("\n"); // Print a newline at the end of each row
+			x++;
+		}
+
+
 
 	if (game.map_copy == NULL) {
 		ft_printf("Map copy is NULL.\n");
@@ -256,17 +276,9 @@ int32_t main(int ac, char *av[])
 	}
 
 
-	if (check_collectables_and_exit_reachability(&game))
-	{
-		ft_printf("All collectables and the exit are reachable.\n");
-	}
-	else
-	{
-		ft_printf("Some collectables or the exit are not reachable.\n");
-	}
+	check_reachability(&game);
 
-
-	game.line_width = ft_strlen(game.map[0]);
+	// game.line_width = ft_strlen(game.map[0]);
 
 
 	if (!(game.mlx = mlx_init(WIDTH * game.line_width, HEIGHT * game.line_count, "Redbull Bull", false)))
@@ -279,10 +291,11 @@ int32_t main(int ac, char *av[])
 
 	draw_map(&game);
 	draw_player(&game);
-	// system("so_long maps/map1.ber");
+	// system("leaks so_long");
 	mlx_key_hook(game.mlx, &ft_key_hook, &game);
 	mlx_loop(game.mlx);
 	// mlx_put_string(game.mlx, "GAME OVER, YOU WIN", 0, 0);
+		// system("leaks so_long");
 	mlx_terminate(game.mlx);
 	return (EXIT_SUCCESS);
 }

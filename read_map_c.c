@@ -7,8 +7,7 @@ int	line_counter(t_game *game, char *file)
 
 	fd = open(file, O_RDONLY);
 	if (fd == -1)
-		// return (-1);
-		error_and_cleanup(game, strerror(errno));
+		return (-1);
 	current_line = NULL;
 	// game->line_count = 0;
 	ft_printf("before free\n");

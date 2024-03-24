@@ -31,4 +31,6 @@ void	init_game(t_game *game)
 	game->player_y = 0;
 	game->init_collc_count = 0;
 	game->read_collc_count = 0;
+	game->exit_count = 0;
+	game->player_count = 0;
 }

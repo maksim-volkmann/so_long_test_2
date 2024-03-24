@@ -1,69 +1,81 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   check_map_path.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: goldman <goldman@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/03/24 17:09:42 by goldman           #+#    #+#             */
+/*   Updated: 2024/03/24 22:03:17 by goldman          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "so_long.h"
 
-void copy_map(t_game *game) {
-	int i;
-	printf("Line count: %d\n", game->line_count); // After setting line_count
+void	copy_map(t_game *game)
+{
+	int	i;
 
 	game->map_copy = malloc(sizeof(char *) * (game->line_count + 1));
-	if (!game->map_copy) {
-		prn_error("Memory allocation error for map copy");
-		return;
-	}
-
+	if (!game->map_copy)
+		error_and_cleanup(game, ORG_MAP_ERR);
 	i = 0;
-	while (i < game->line_count) {
+	while (i < game->line_count)
+	{
 		game->map_copy[i] = ft_strdup(game->map[i]);
-		if (!game->map_copy[i]) {
-			prn_error("Memory allocation error for map copy line");
-			return;
-		}
+		if (!game->map_copy[i])
+			error_and_cleanup(game, CPY_MAP_ERR);
 		i++;
 	}
-	game->map_copy[game->line_count] = NULL; // Null-terminate the map copy
+	game->map_copy[game->line_count] = NULL;
 }
 
-void flood_fill(t_game *game, int x, int y, char target, char replacement) {
-
-	if (x < 0 || x >= game->line_count || y < 0 || y >= (int)ft_strlen(game->map[0]) || game->map_copy[x][y] != target)
-		return;
-	game->map_copy[x][y] = replacement;
-	flood_fill(game, x + 1, y, target, replacement);
-	flood_fill(game, x - 1, y, target, replacement);
-	flood_fill(game, x, y + 1, target, replacement);
-	flood_fill(game, x, y - 1, target, replacement);
-}
-
-
-int check_collectables_and_exit_reachability(t_game *game)
+int	is_fill_target(char tile)
 {
-	int x;
-	char current_char;
-	int y;
+	int	i;
 
-	x = 0;
-	y = 0;
-	while (x < game->line_count)
+	i = 0;
+	while (TRG_CHR[i] != '\0')
 	{
-		y = 0;
-		while ((current_char = game->map_copy[x][y]) != '\0')
-		{
-			// Check if the current character is a collectable or an exit
-			if (current_char == 'C' || current_char == 'E')
-			{
-				// Check adjacent cells for 'F'
-				if (!((x > 0 && game->map_copy[x-1][y] == 'F') ||
-						(x < game->line_count - 1 && game->map_copy[x+1][y] == 'F') ||
-						(y > 0 && game->map_copy[x][y-1] == 'F') ||
-						(game->map_copy[x][y+1] == 'F')))
-				{ // Right
-					prn_error("A collectable or the exit is not reachable.");
-					return 0; // Not all collectables/exits are reachable
-				}
-			}
-			y++;
-		}
-		x++;
+		if (tile == TRG_CHR[i])
+			return (1);
+		i++;
 	}
-	return 1; // All collectables and the exit are reachable
+	return (0);
 }
 
+void	flood_fill(t_game *game, int x, int y)
+{
+	if (x < 0 || x >= game->line_width
+		|| y < 0 || y >= game->line_count
+		|| !is_fill_target(game->map_copy[y][x]))
+	{
+		return ;
+	}
+	game->map_copy[y][x] = FILL_CHR;
+	flood_fill(game, x + 1, y);
+	flood_fill(game, x - 1, y);
+	flood_fill(game, x, y + 1);
+	flood_fill(game, x, y - 1);
+}
+
+void	check_reachability(t_game *game)
+{
+	int		x;
+	int		y;
+	char	current_tile;
+
+	y = 0;
+	while (y < game->line_count)
+	{
+		x = 0;
+		while (x < game->line_width)
+		{
+			current_tile = game->map_copy[y][x];
+			if (current_tile == 'C' || current_tile == 'E')
+				error_and_cleanup(game, FIL_ERR);
+			x++;
+		}
+		y++;
+	}
+}

@@ -1,33 +1,38 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   validate_map.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: goldman <goldman@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/03/24 16:52:44 by goldman           #+#    #+#             */
+/*   Updated: 2024/03/24 16:53:51 by goldman          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "so_long.h"
 
-void check_map_line_lengths(t_game *game)
+void	check_map_line_lengths(t_game *game)
 {
-	int i;
-	size_t line_length;
+	int		i;
+	size_t	line_length;
 
-	if (game->map == NULL || game->map[0] == NULL) {
-		prn_error("Map is not loaded or is empty");
-		return;
-	}
-
+	if (game->map == NULL || game->map[0] == NULL)
+		error_and_cleanup(game, EMP_FILE);
 	i = 0;
 	line_length = ft_strlen(game->map[0]);
-	while (game->map[i] != NULL) {
-		if (ft_strlen(game->map[i]) != line_length) {
-			prn_error("Map lines are not of the same length!");
-			return;
-		}
+	while (game->map[i] != NULL)
+	{
+		if (ft_strlen(game->map[i]) != line_length)
+			error_and_cleanup(game, NOT_RECT);
 		i++;
 	}
-
-	// Additional checks can be added here if needed
-	ft_printf("All map lines are consistent.\n");
 }
 
-void check_map_for_valid_characters(t_game *game)
+void	check_map_for_valid_characters(t_game *game)
 {
-	int i;
-	int j;
+	int	i;
+	int	j;
 
 	i = 0;
 	while (game->map[i])
@@ -39,105 +44,75 @@ void check_map_for_valid_characters(t_game *game)
 				game->map[i][j] != 'E' && game->map[i][j] != 'C' &&
 				game->map[i][j] != '0')
 			{
-				prn_error("Map contains invalid characters!");
-				return;
+				error_and_cleanup(game, INV_CHAR);
 			}
 			j++;
 		}
 		i++;
 	}
-	ft_printf("Map characters are valid.\n");
 }
 
-void check_map_walls(t_game *game)
+void	check_map_walls(t_game *game)
 {
-    int i, j;
-
-    // Check first and last row
-    i = 0;
-    j = 0;
-    while (game->map[0][j]) // Check first line
-    {
-        if (game->map[0][j] != '1')
-        {
-            prn_error("First row does not consist of only walls ('1')");
-            return;
-        }
-        j++;
-    }
-
-    j = 0;
-    while (game->map[game->line_count - 1][j]) // Check last line
-    {
-        if (game->map[game->line_count - 1][j] != '1')
-        {
-            prn_error("Last row does not consist of only walls ('1')");
-            return;
-        }
-        j++;
-    }
-
-    // Check first and last character of each line
-    while (game->map[i] != NULL)
-    {
-        if (game->map[i][0] != '1' || game->map[i][ft_strlen(game->map[i]) - 1] != '1')
-        {
-            prn_error("First or last character of a row is not a wall ('1')");
-            return;
-        }
-        i++;
-    }
-
-    ft_printf("Map walls are valid.\n");
-}
-void check_map_characters_count(t_game *game)
-{
-	int i;
 	int	j;
-	int exit_count = 0;
-	// int collectible_count = 0;
-	int start_position_count = 0;
 
-	// for (int i = 0; &game->map[i] != NULL; i++) {
-	// 	printf("\033[32m%s\033[0m\n", game->map[i]);
-	// }
+	j = 0;
+	while (game->map[0][j]) // Check first line
+	{
+		if (game->map[0][j] != '1')
+			error_and_cleanup(game, FRS_ROW);
+		j++;
+	}
+	j = 0;
+	while (game->map[game->line_count - 1][j]) // Check last line
+	{
+		if (game->map[game->line_count - 1][j] != '1')
+			error_and_cleanup(game, LST_ROW);
+		j++;
+	}
+	j = 0;
+	while (game->map[j] != NULL) // Check first and last character of each line
+	{
+		if (game->map[j][0] != '1'
+		|| game->map[j][ft_strlen(game->map[j]) - 1] != '1')
+			error_and_cleanup(game, VRT_WALL);
+		j++;
+	}
+}
+
+void	count_map_characters(t_game *game)
+{
+	int	i;
+	int	j;
+
 	i = 0;
 	while (game->map[i])
 	{
 		j = 0;
 		while (game->map[i][j])
 		{
-			if (game->map[i][j] == 'E') exit_count++;
-			else if (game->map[i][j] == 'C') game->init_collc_count++;
+			if (game->map[i][j] == 'E')
+				game->exit_count++;
+			else if (game->map[i][j] == 'C')
+				game->init_collc_count++;
 			else if (game->map[i][j] == 'P')
 			{
-				 printf("Found P at i=%d, j=%d\n", j, i);
 				game->player_x = j;
 				game->player_y = i;
-				start_position_count++;
+				game->player_count++;
 			}
 			j++;
 		}
 		i++;
 	}
+}
 
-	// Check for the map requirements
-	if (exit_count != 1)
-	{
-		prn_error("Map must contain exactly one exit ('E')!");
-		return;
-	}
+void	check_map_character_count(t_game *game)
+{
+	if (game->exit_count != 1) // Check for the map requirements
+		error_and_cleanup(game, EXT_ERR);
 	if (game->init_collc_count < 1)
-	{
-		prn_error("Map must contain at least one collectible ('C')!");
-		return;
-	}
-	if (start_position_count != 1)
-	{
-		prn_error("Map must contain exactly one starting position ('P')!");
-		return;
-	}
-
-	// If all checks are passed
-	ft_printf("Map requirements are valid.\n");
+		error_and_cleanup(game, COL_ERR);
+	if (game->player_count != 1)
+		error_and_cleanup(game, PLR_ERR);
 }
