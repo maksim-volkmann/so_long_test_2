@@ -6,7 +6,7 @@
 /*   By: mvolkman <mvolkman@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/23 11:06:26 by mvolkman          #+#    #+#             */
-/*   Updated: 2024/03/25 11:04:41 by mvolkman         ###   ########.fr       */
+/*   Updated: 2024/03/25 15:23:36 by mvolkman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,13 +31,16 @@ void	free_map(char ***map)
 	int	i;
 
 	i = 0;
-	while ((*map)[i])
+	if (map && *map)
 	{
-		free((*map)[i]);
-		i++;
+		while ((*map)[i])
+		{
+			free((*map)[i]);
+			i++;
+		}
+		free(*map);
+		*map = NULL;
 	}
-	free(*map);
-	*map = NULL;
 }
 
 void	error_and_cleanup(t_game *game, const char *msg)

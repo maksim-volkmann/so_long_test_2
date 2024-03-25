@@ -6,13 +6,13 @@
 /*   By: mvolkman <mvolkman@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 12:39:18 by mvolkman          #+#    #+#             */
-/*   Updated: 2024/03/25 12:50:45 by mvolkman         ###   ########.fr       */
+/*   Updated: 2024/03/25 16:21:03 by mvolkman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long.h"
 
-int	line_counter(t_game *game, char *file)
+void	line_counter(t_game *game, char *file)
 {
 	int		fd;
 	char	*current_line;
@@ -27,8 +27,9 @@ int	line_counter(t_game *game, char *file)
 		free(current_line);
 		current_line = get_next_line(fd);
 	}
+	if (game->line_count >= 18)
+		error_and_cleanup(game, FIL_TO_BIG);
 	close(fd);
-	return (0);
 }
 
 void	array_of_pointer(t_game *game)
@@ -41,7 +42,7 @@ void	array_of_pointer(t_game *game)
 	game->map[game->line_count] = NULL;
 }
 
-int	populate_map(t_game *game, char *file)
+void	populate_map(t_game *game, char *file)
 {
 	int		fd;
 	char	*line;
@@ -62,7 +63,8 @@ int	populate_map(t_game *game, char *file)
 		i++;
 		line = get_next_line(fd);
 	}
-	close(fd);
 	game->line_width = ft_strlen(game->map[0]);
-	return (0);
+	if (game->line_width >= 33)
+		error_and_cleanup(game, FIL_TO_BIG);
+	close(fd);
 }

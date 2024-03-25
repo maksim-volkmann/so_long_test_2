@@ -6,7 +6,7 @@
 /*   By: mvolkman <mvolkman@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 08:12:50 by mvolkman          #+#    #+#             */
-/*   Updated: 2024/03/25 13:08:41 by mvolkman         ###   ########.fr       */
+/*   Updated: 2024/03/25 15:29:31 by mvolkman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,6 @@ void	init_variables(t_game *game)
 	game->wall = NULL;
 	game->door = NULL;
 	game->collc = NULL;
-	game->x = 0;
-	game->y = 0;
 	game->counter = 0;
 	game->map = NULL;
 	game->map_copy = NULL;

@@ -6,7 +6,7 @@
 /*   By: mvolkman <mvolkman@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 16:52:44 by goldman           #+#    #+#             */
-/*   Updated: 2024/03/25 11:27:42 by mvolkman         ###   ########.fr       */
+/*   Updated: 2024/03/25 14:54:44 by mvolkman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ void	check_map_line_lengths(t_game *game)
 			error_and_cleanup(game, NOT_RECT);
 		i++;
 	}
+	check_map_for_valid_characters(game);
 }
 
 void	check_map_for_valid_characters(t_game *game)
@@ -50,6 +51,7 @@ void	check_map_for_valid_characters(t_game *game)
 		}
 		i++;
 	}
+	check_map_walls(game);
 }
 
 void	check_map_walls(t_game *game)
@@ -57,27 +59,28 @@ void	check_map_walls(t_game *game)
 	int	j;
 
 	j = 0;
-	while (game->map[0][j]) // Check first line
+	while (game->map[0][j])
 	{
 		if (game->map[0][j] != '1')
 			error_and_cleanup(game, FRS_ROW);
 		j++;
 	}
 	j = 0;
-	while (game->map[game->line_count - 1][j]) // Check last line
+	while (game->map[game->line_count - 1][j])
 	{
 		if (game->map[game->line_count - 1][j] != '1')
 			error_and_cleanup(game, LST_ROW);
 		j++;
 	}
 	j = 0;
-	while (game->map[j] != NULL) // Check first and last character of each line
+	while (game->map[j] != NULL)
 	{
 		if (game->map[j][0] != '1'
 		|| game->map[j][ft_strlen(game->map[j]) - 1] != '1')
 			error_and_cleanup(game, VRT_WALL);
 		j++;
 	}
+	count_map_characters(game);
 }
 
 void	count_map_characters(t_game *game)
@@ -105,11 +108,12 @@ void	count_map_characters(t_game *game)
 		}
 		i++;
 	}
+	check_map_character_count(game);
 }
 
 void	check_map_character_count(t_game *game)
 {
-	if (game->exit_count != 1) // Check for the map requirements
+	if (game->exit_count != 1)
 		error_and_cleanup(game, EXT_ERR);
 	if (game->coll_s < 1)
 		error_and_cleanup(game, COL_ERR);

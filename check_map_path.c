@@ -6,7 +6,7 @@
 /*   By: mvolkman <mvolkman@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 17:09:42 by goldman           #+#    #+#             */
-/*   Updated: 2024/03/25 08:19:28 by mvolkman         ###   ########.fr       */
+/*   Updated: 2024/03/25 15:39:42 by mvolkman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	copy_map(t_game *game)
 	game->map_copy[game->line_count] = NULL;
 }
 
-int	is_fill_target(char tile)
+bool	is_fill_target(char tile)
 {
 	int	i;
 
@@ -38,10 +38,10 @@ int	is_fill_target(char tile)
 	while (TRG_CHR[i] != '\0')
 	{
 		if (tile == TRG_CHR[i])
-			return (1);
+			return (true);
 		i++;
 	}
-	return (0);
+	return (false);
 }
 
 void	flood_fill(t_game *game, int x, int y)
