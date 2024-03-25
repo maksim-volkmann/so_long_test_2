@@ -11,13 +11,13 @@
 
 # define WIDTH 50
 # define HEIGHT 50
-# define TILE_SIZE 50
+# define TILE 50
 
 
 # define PLAYER "images/player.png"
 # define WALL "images/wall.png"
 # define DOOR "images/door.png"
-# define BACKGROUND "images/background.png"
+# define FLOOR "images/background.png"
 # define COLLECTABLE "images/collectable.png"
 
 # define NUM_ARGS "Invalid number of arguments!"
@@ -35,6 +35,9 @@
 # define ORG_MAP_ERR "Memory allocation failed for the map!"
 # define CPY_MAP_ERR "Memory allocation failed for the map copy!"
 # define FIL_ERR "Map path is blocked!"
+# define TXT_ERR "Error loading textures!"
+# define OPN_ERR "Failed opening the file!"
+# define MLC_ERR "Memory allocation failed!"
 
 # define TRG_CHR "0PEC"
 # define FILL_CHR 'F'
@@ -43,7 +46,7 @@ typedef struct s_game
 {
 	mlx_t	*mlx;
 	mlx_image_t *player;
-	mlx_image_t *background;
+	mlx_image_t *floor;
 	mlx_image_t *wall;
 	mlx_image_t *door;
 	mlx_image_t *collc;
@@ -54,10 +57,10 @@ typedef struct s_game
 	char	**map_copy;
 	int	line_count;
 	int	line_width;
-	int	player_x;
-	int	player_y;
-	int	init_collc_count;
-	int	read_collc_count;
+	int	p_x;
+	int	p_y;
+	int	coll_s;
+	int	coll_c;
 	int exit_count;
 	int player_count;
 }	t_game;
@@ -93,11 +96,20 @@ void	flood_fill(t_game *game, int x, int y);
 void	check_reachability(t_game *game);
 
 //iniinitialize.c
-void	init_game(t_game *game);
+void	init_variables(t_game *game);
+bool	load_texture(mlx_t *mlx, const char *path, mlx_image_t **texture);
+void	init_textures(t_game *game);
 
 //clean_up.c
 void	free_images(t_game *game);
 void	free_map(char ***map);
 void	error_and_cleanup(t_game *game, const char *msg);
+
+//draw_and_move.c
+void draw_map(t_game *game);
+void redraw_tile(t_game *game, int x, int y);
+void draw_player(t_game *game);
+void attempt_move(t_game *game, int dx, int dy);
+void ft_key_hook(mlx_key_data_t keydata, void *param);
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   validate_map.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: goldman <goldman@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mvolkman <mvolkman@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 16:52:44 by goldman           #+#    #+#             */
-/*   Updated: 2024/03/24 16:53:51 by goldman          ###   ########.fr       */
+/*   Updated: 2024/03/25 11:27:42 by mvolkman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,11 +94,11 @@ void	count_map_characters(t_game *game)
 			if (game->map[i][j] == 'E')
 				game->exit_count++;
 			else if (game->map[i][j] == 'C')
-				game->init_collc_count++;
+				game->coll_s++;
 			else if (game->map[i][j] == 'P')
 			{
-				game->player_x = j;
-				game->player_y = i;
+				game->p_x = j;
+				game->p_y = i;
 				game->player_count++;
 			}
 			j++;
@@ -111,7 +111,7 @@ void	check_map_character_count(t_game *game)
 {
 	if (game->exit_count != 1) // Check for the map requirements
 		error_and_cleanup(game, EXT_ERR);
-	if (game->init_collc_count < 1)
+	if (game->coll_s < 1)
 		error_and_cleanup(game, COL_ERR);
 	if (game->player_count != 1)
 		error_and_cleanup(game, PLR_ERR);

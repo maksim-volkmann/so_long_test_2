@@ -6,7 +6,7 @@
 #    By: mvolkman <mvolkman@student.42heilbronn.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/08 16:31:03 by mvolkman          #+#    #+#              #
-#    Updated: 2024/03/23 14:18:37 by mvolkman         ###   ########.fr        #
+#    Updated: 2024/03/25 10:32:08 by mvolkman         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,6 +22,7 @@ SRC = \
 	check_map_path.c \
 	initialize.c \
 	clean_up.c \
+	draw_and_move.c \
 
 
 # Object files

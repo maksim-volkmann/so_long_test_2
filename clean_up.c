@@ -6,7 +6,7 @@
 /*   By: mvolkman <mvolkman@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/23 11:06:26 by mvolkman          #+#    #+#             */
-/*   Updated: 2024/03/23 14:22:48 by mvolkman         ###   ########.fr       */
+/*   Updated: 2024/03/25 11:04:41 by mvolkman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@ void	free_images(t_game *game)
 {
 	if (game->player)
 		mlx_delete_image(game->mlx, game->player);
-	if (game->background)
-		mlx_delete_image(game->mlx, game->background);
+	if (game->floor)
+		mlx_delete_image(game->mlx, game->floor);
 	if (game->wall)
 		mlx_delete_image(game->mlx, game->wall);
 	if (game->door)
