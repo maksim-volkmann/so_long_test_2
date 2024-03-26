@@ -6,13 +6,33 @@
 /*   By: mvolkman <mvolkman@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 08:12:57 by mvolkman          #+#    #+#             */
-/*   Updated: 2024/03/25 16:21:17 by mvolkman         ###   ########.fr       */
+/*   Updated: 2024/03/26 12:19:25 by mvolkman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long.h"
 
-int	validate_map_name(const char *map_name)
+void	ft_key_hook(mlx_key_data_t keydata, void *param)
+{
+	t_game	*game;
+
+	game = param;
+	if (keydata.key == MLX_KEY_ESCAPE)
+		mlx_close_window(game->mlx);
+	if (keydata.action == MLX_PRESS || keydata.action == MLX_REPEAT)
+	{
+		if (keydata.key == MLX_KEY_W || keydata.key == MLX_KEY_UP)
+			attempt_move(game, 0, -1);
+		else if (keydata.key == MLX_KEY_S || keydata.key == MLX_KEY_DOWN)
+			attempt_move(game, 0, 1);
+		else if (keydata.key == MLX_KEY_A || keydata.key == MLX_KEY_LEFT)
+			attempt_move(game, -1, 0);
+		else if (keydata.key == MLX_KEY_D || keydata.key == MLX_KEY_RIGHT)
+			attempt_move(game, 1, 0);
+	}
+}
+
+bool	validate_map_file_name(const char *map_name)
 {
 	const char	*actual_file_name;
 	size_t		len;
@@ -24,26 +44,13 @@ int	validate_map_name(const char *map_name)
 		actual_file_name++;
 	len = ft_strlen(actual_file_name);
 	if (len < 5)
-		return (0);
+		return (false);
 	if (actual_file_name[len - 4] == '.'
 		&& actual_file_name[len - 3] == 'b'
 		&& actual_file_name[len - 2] == 'e'
 		&& actual_file_name[len - 1] == 'r')
-		return (1);
-	return (0);
-}
-
-void	init_game(t_game *game)
-{
-	int	game_width;
-	int	game_height;
-
-	game_width = TILE * game->line_width;
-	game_height = TILE * game->line_count;
-	game->mlx = mlx_init(game_width, game_height, "Redbull Bull", false);
-	if (!(game->mlx))
-		error_and_cleanup(game, mlx_strerror(mlx_errno));
-	init_textures(game);
+		return (true);
+	return (false);
 }
 
 int32_t	main(int ac, char *av[])
@@ -53,7 +60,7 @@ int32_t	main(int ac, char *av[])
 	init_variables(&game);
 	if (ac != 2)
 		error_and_cleanup(&game, NUM_ARGS);
-	if (!validate_map_name(av[1]))
+	if (!validate_map_file_name(av[1]))
 		error_and_cleanup(&game, INV_NAME);
 	line_counter(&game, av[1]);
 	array_of_pointer(&game);

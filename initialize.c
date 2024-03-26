@@ -6,7 +6,7 @@
 /*   By: mvolkman <mvolkman@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 08:12:50 by mvolkman          #+#    #+#             */
-/*   Updated: 2024/03/25 15:29:31 by mvolkman         ###   ########.fr       */
+/*   Updated: 2024/03/26 12:15:28 by mvolkman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,4 +55,17 @@ void	init_textures(t_game *game)
 		|| !load_texture(game->mlx, COLLECTABLE, &game->collc)
 		|| !load_texture(game->mlx, PLAYER, &game->player))
 		error_and_cleanup(game, TXT_ERR);
+}
+
+void	init_game(t_game *game)
+{
+	int	game_width;
+	int	game_height;
+
+	game_width = TILE * game->line_width;
+	game_height = TILE * game->line_count;
+	game->mlx = mlx_init(game_width, game_height, "Redbull Bull", false);
+	if (!(game->mlx))
+		error_and_cleanup(game, mlx_strerror(mlx_errno));
+	init_textures(game);
 }

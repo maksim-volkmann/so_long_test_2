@@ -6,7 +6,7 @@
 /*   By: mvolkman <mvolkman@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 14:25:44 by mvolkman          #+#    #+#             */
-/*   Updated: 2024/03/25 16:11:44 by mvolkman         ###   ########.fr       */
+/*   Updated: 2024/03/26 12:53:16 by mvolkman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 # include <stdlib.h>
 # include <stdbool.h>
 # include <string.h>
-# include <errno.h>
 # include "libft/include/libft.h"
 # include "MLX42/MLX42.h"
 
@@ -72,10 +71,33 @@ typedef struct s_game
 	int			player_count;
 }	t_game;
 
+//check_map_path.c
+void	copy_map(t_game *game);
+bool	is_fill_target(char tile);
+void	flood_fill(t_game *game, int x, int y);
+void	check_reachability(t_game *game);
+
+//clean_up.c
+void	free_images(t_game *game);
+void	free_map(char ***map);
+void	error_and_cleanup(t_game *game, const char *msg);
+
+//draw_and_move.c
+void	tile_draw(t_game *game, mlx_image_t *image, int x, int y);
+void	draw_map(t_game *game);
+void	redraw_tile(t_game *game, int x, int y);
+void	draw_player(t_game *game);
+void	attempt_move(t_game *game, int dx, int dy);
+
+// initialize.c
+void	init_variables(t_game *game);
+bool	load_texture(mlx_t *mlx, const char *path, mlx_image_t **texture);
+void	init_textures(t_game *game);
+void	init_game(t_game *game);
+
 // read_map.c
 void	line_counter(t_game *game, char *file);
 void	array_of_pointer(t_game *game);
-void	prn_error(char *message);
 void	populate_map(t_game *game, char *file);
 
 //validate_map.c
@@ -85,28 +107,9 @@ void	check_map_walls(t_game *game);
 void	count_map_characters(t_game *game);
 void	check_map_character_count(t_game *game);
 
-//check_map_path.c
-void	copy_map(t_game *game);
-bool	is_fill_target(char tile);
-void	flood_fill(t_game *game, int x, int y);
-void	check_reachability(t_game *game);
-
-//iniinitialize.c
-void	init_variables(t_game *game);
-bool	load_texture(mlx_t *mlx, const char *path, mlx_image_t **texture);
-void	init_textures(t_game *game);
-
-//clean_up.c
-void	free_images(t_game *game);
-// void	free_map(char ***map);
-void	free_map(char ***map);
-void	error_and_cleanup(t_game *game, const char *msg);
-
-//draw_and_move.c
-void	draw_map(t_game *game);
-void	redraw_tile(t_game *game, int x, int y);
-void	draw_player(t_game *game);
-void	attempt_move(t_game *game, int dx, int dy);
+//so_long.c
+void	init_game(t_game *game);
+bool	validate_map_file_name(const char *map_name);
 void	ft_key_hook(mlx_key_data_t keydata, void *param);
 
 #endif
